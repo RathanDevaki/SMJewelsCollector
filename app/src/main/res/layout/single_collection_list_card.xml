@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/single_collection_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/colorWhite"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:id="@+id/single_collection_photo"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abhishek Das R"
+                android:layout_gravity="center"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:id="@+id/single_collection_name"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="11sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:id="@+id/single_collection_plan_name"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#152, 1st Stage, 3rd Cross, Kuvempunagar, Mysore"
+                android:fontFamily="@font/montserrat_medium"
+                android:textSize="12sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:textAlignment="center"
+                android:id="@+id/single_collection_address"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Call"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_phone"
+                android:id="@+id/clickToCall"/>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
