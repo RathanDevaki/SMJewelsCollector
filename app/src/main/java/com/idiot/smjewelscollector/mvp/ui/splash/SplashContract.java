@@ -1,5 +1,6 @@
 package com.idiot.smjewelscollector.mvp.ui.splash;
 
+import android.app.Activity;
 import android.content.Context;
 
 public interface SplashContract {
@@ -14,6 +15,7 @@ public interface SplashContract {
         boolean checkLogin();
         void showDialog(Context context);
         void hideDialog();
+        boolean checkPermission(Activity activity, String... permissions);
     }
 
 

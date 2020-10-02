@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.idiot.smjewelscollector.R;
 import com.idiot.smjewelscollector.databinding.FragmentHomeBinding;
+import com.idiot.smjewelscollector.mvp.ui.CreateUser.CreateUserFragment;
 
 public class HomeFragment extends Fragment implements DashboardContract.View, BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -77,8 +78,12 @@ public class HomeFragment extends Fragment implements DashboardContract.View, Bo
                 loadFragment(fragment);
                 return true;
             case R.id.create_user_menu:
+                fragment = new CreateUserFragment();
+                loadFragment(fragment);
                 return true;
             case R.id.profile_menu:
+                fragment = new AccountFragment();
+                loadFragment(fragment);
                 return true;
 
         }

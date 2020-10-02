@@ -1,5 +1,6 @@
 package com.idiot.smjewelscollector.mvp.ui.splash;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import com.idiot.smjewelscollector.R;
 import com.idiot.smjewelscollector.databinding.FragmentSplashBinding;
 import com.idiot.smjewelscollector.mvp.utils.NavigationUtil;
 
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -17,6 +19,13 @@ public class SplashFragment extends Fragment implements SplashContract.View {
 
     FragmentSplashBinding mBinding;
     SplashPresenter mPresenter;
+
+    //Permissions Needed
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.CAMERA
+    };
 
     public SplashFragment() {
         // Required empty public constructor
@@ -43,6 +52,10 @@ public class SplashFragment extends Fragment implements SplashContract.View {
             @Override
             public void run() {
                 if (mPresenter.checkInternet(getContext())){// Checking of internet connection
+
+                    if (!mPresenter.checkPermission(getActivity(),PERMISSIONS)){
+                        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, PERMISSION_ALL);
+                    }
 
                     if (mPresenter.checkLogin()) { //Already user is logged in
                         NavigationUtil.INSTANCE.toMainActivity();

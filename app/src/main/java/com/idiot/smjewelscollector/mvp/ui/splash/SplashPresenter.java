@@ -1,9 +1,13 @@
 package com.idiot.smjewelscollector.mvp.ui.splash;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -59,6 +63,19 @@ public class SplashPresenter implements SplashContract.Presenter {
     @Override
     public void showDialog(Context context) {
 
+    }
+
+
+    @Override
+    public boolean checkPermission(Activity activity, String... permissions) {
+        if (activity != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
