@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Abhishek Das R"
+                    android:text="Loading..."
                     android:fontFamily="@font/montserrat_bold"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
@@ -56,7 +56,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="202008001"
+                    android:text="Loading..."
                     android:fontFamily="@font/montserrat_medium"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"
@@ -65,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Plan A"
+                    android:text="Loading..."
                     android:fontFamily="@font/montserrat_medium"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"

@@ -166,6 +166,9 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
         usersMap.put("NomineeRelationship",mBinding.userNomineeRelationshipSignUp.getText().toString());
         usersMap.put("NomineePhone",mBinding.userNomineePhoneSignUp.getText().toString());
         usersMap.put("Plan",mBinding.planSpinner.getSelectedItem().toString());
+
+
+
         databaseReference.push().setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
