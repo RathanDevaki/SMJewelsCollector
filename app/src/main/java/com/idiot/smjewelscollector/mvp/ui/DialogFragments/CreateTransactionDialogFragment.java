@@ -179,13 +179,47 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                 stringBuffer.append(line);
             }
             rd.close();
+            updateTransactionInfo(); //To Update Completed Months Etc
             return stringBuffer.toString();
+
         } catch (Exception e) {
-            System.out.println("Error SMS "+e);
-            Log.v("TAG","SMS ERROR=>" + e);
-            Toasty.error(getContext(),e.getMessage()).show();
-            return "Error "+e;
+            System.out.println("Error SMS " + e);
+            Log.v("TAG", "SMS ERROR=>" + e);
+            Toasty.error(getContext(), e.getMessage()).show();
+            return "Error " + e;
         }
+    }
+
+    private void updateTransactionInfo() {
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(planName);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long planAmount = snapshot.child("PlanAmount").getValue(long.class);
+                if (snapshot.child("UsersList").child(userID).hasChild("CompletedMonths")) {
+                    long completedMonths = snapshot.child("UsersList").child(userID).child("CompletedMonths").getValue(Long.class);
+                    completedMonths++;
+                    databaseReference.child("UsersList").child(userID).child("CompletedMonths").setValue(completedMonths);
+                    databaseReference.child("UsersList").child(userID).child("TotalAmount").setValue((int) completedMonths * planAmount);
+                    databaseReference.child("UsersList").child(userID).child("TotalTransactions").setValue(completedMonths);
+
+                } else {
+                    databaseReference.child("UsersList").child(userID).child("CompletedMonths").setValue(1);
+                    databaseReference.child("UsersList").child(userID).child("TotalAmount").setValue(planAmount);
+                    databaseReference.child("UsersList").child(userID).child("TotalTransactions").setValue(1);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     @Override
