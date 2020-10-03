@@ -53,7 +53,8 @@ public class HomeFragment extends Fragment implements DashboardContract.View, Bo
     }
 
     @Override
-    public void onSuccess(String message) {
+    public void onSuccess(String message)
+    {
 
     }
 

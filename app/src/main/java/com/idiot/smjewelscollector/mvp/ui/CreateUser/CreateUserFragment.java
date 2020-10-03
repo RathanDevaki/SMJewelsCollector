@@ -9,11 +9,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -39,6 +41,7 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
+    String pushKey,user_id,phone,plan;
     String imageUrl;
     Uri imageUri;
     public static final int IMAGE_CODE=1;
@@ -146,14 +149,13 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
         } else {
             uploadData();
         }
-
     }
-
-    private void uploadData() {
-
+    private void uploadData()
+    {
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("ApprovalList");
+        databaseReference = firebaseDatabase.getReference().child("PlanA").child("UsersList");
         HashMap<String,String> usersMap = new HashMap<>();
+        usersMap.put("ID",mBinding.userIdSignup.getText().toString());
         usersMap.put("Name",mBinding.userNameSignUp.getText().toString());
         usersMap.put("Phone",mBinding.userPhoneSignUp.getText().toString());
         usersMap.put("EmailID",mBinding.userEmailSignUp.getText().toString());
@@ -166,15 +168,38 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
         usersMap.put("NomineeRelationship",mBinding.userNomineeRelationshipSignUp.getText().toString());
         usersMap.put("NomineePhone",mBinding.userNomineePhoneSignUp.getText().toString());
         usersMap.put("Plan",mBinding.planSpinner.getSelectedItem().toString());
+
+       user_id=mBinding.userIdSignup.getText().toString();
+       phone=mBinding.userPhoneSignUp.getText().toString();
+       plan=mBinding.planSpinner.getSelectedItem().toString();
+       pushKey= databaseReference.push().getKey();
+        Log.v("log",pushKey);
+
         databaseReference.push().setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                uploadUsersList(pushKey,phone,plan);
                 Toasty.success(getContext(),"Account Created Successfully").show();
             }
         });
-
     }
 
+    private void uploadUsersList(String pushKey, String phone, String plan)
+    {
+        FirebaseDatabase firebasedatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReferences=firebasedatabase.getReference().child("UsersList");
+        HashMap<String,String>usersListMap=new HashMap<>();
+        usersListMap.put("Phone",phone);
+        usersListMap.put("Plan",plan);
+        usersListMap.put("UserID",pushKey);
+
+        databaseReferences.push().setValue(usersListMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(),"User added",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     @Override
     public void onSuccess(String message) {
