@@ -169,22 +169,25 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
         usersMap.put("NomineePhone",mBinding.userNomineePhoneSignUp.getText().toString());
         usersMap.put("Plan",mBinding.planSpinner.getSelectedItem().toString());
 
+        //total mnth=18,compl mth=0,tot amt=0;
        user_id=mBinding.userIdSignup.getText().toString();
        phone=mBinding.userPhoneSignUp.getText().toString();
        plan=mBinding.planSpinner.getSelectedItem().toString();
        pushKey= databaseReference.push().getKey();
         Log.v("log",pushKey);
 
-        databaseReference.push().setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+       // databaseReference.setValue(usersMap);
+
+       databaseReference.child("Set1").child(pushKey).setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                uploadUsersList(pushKey,phone,plan);
+                uploadUsersList(pushKey,phone,plan,user_id);
                 Toasty.success(getContext(),"Account Created Successfully").show();
             }
         });
     }
 
-    private void uploadUsersList(String pushKey, String phone, String plan)
+    private void uploadUsersList(String pushKey, String phone, String plan,String user_id)
     {
         FirebaseDatabase firebasedatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReferences=firebasedatabase.getReference().child("UsersList");
@@ -192,8 +195,9 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
         usersListMap.put("Phone",phone);
         usersListMap.put("Plan",plan);
         usersListMap.put("UserID",pushKey);
-
-        databaseReferences.push().setValue(usersListMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        usersListMap.put("SetName","Set1");
+        //databaseReferences.child(user_id).setValue(usersListMap);
+       databaseReferences.child(user_id).setValue(usersListMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(getContext(),"User added",Toast.LENGTH_LONG).show();
