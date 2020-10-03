@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 
 import com.idiot.smjewelscollector.databinding.ActivityMainBinding;
 import com.idiot.smjewelscollector.mvp.ui.Dashboard.DashboardContract;
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity implements DashboardContract
         mPresenter = new DashboardPresenter( this);
         init();
         mBinding.getRoot();
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
     }
 
     private void init() {

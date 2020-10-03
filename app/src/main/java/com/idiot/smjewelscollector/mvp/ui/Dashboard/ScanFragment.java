@@ -91,11 +91,24 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(text)){
                     Toasty.success(getContext(),"Hello").show();
-                    String userID = snapshot.child("UserID").getValue(String.class);
-                    String planName = snapshot.child("Plan").getValue(String.class);
-                    String phone = snapshot.child("Phone").getValue(String.class);
+                    String userID = snapshot.child(text).child("UserID").getValue(String.class);
+                    String planName = snapshot.child(text).child("Plan").getValue(String.class);
+                    String phone = snapshot.child(text).child("Phone").getValue(String.class);
 
-                    createTransactionDialog(userID,planName,phone);
+                    CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Bundle args = new Bundle();
+                    args.putString("UserID",userID);
+                    args.putString("PlanName",planName);
+                    args.putString("Phone",phone);
+                    args.putString("ID",text);
+                    dialogFragment.setArguments(args);
+                    Fragment prev =getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        ft.remove(prev);
+                    }
+                    ft.addToBackStack(null);
+                    dialogFragment.show(ft, "dialog");
                 }else {
                     Toasty.error(getContext(),"Invalid Code Scanned").show();
                 }
@@ -106,41 +119,6 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
 
             }
         });
-
-    }
-
-    private void createTransactionDialog(String userID, String planName, String phone) {
-
-        showPaymentDialog();
-
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        DatabaseReference databaseReference = firebaseDatabase.getReference().child(planName)
-//                .child("UsersList").child(userID);
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-    }
-
-    private void showPaymentDialog() {
-
-        CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        Bundle args = new Bundle();
-        dialogFragment.setArguments(args);
-        Fragment prev =getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-        dialogFragment.show(ft, "dialog");
 
     }
 
