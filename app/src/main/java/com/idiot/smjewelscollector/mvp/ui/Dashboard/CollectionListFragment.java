@@ -82,11 +82,17 @@ public class CollectionListFragment extends Fragment implements DashboardContrac
                     String key = snapshot1.getKey();
                     final String value = snapshot1.getValue(String.class);
 
-                    databaseReference1.child(value).child("UsersList").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    databaseReference1.child(value).child("UsersList").child("Set1").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             CollectionsModal modal = snapshot.getValue(CollectionsModal.class);
                             modal.setPlanName(value);
+                            modal.setAddress(snapshot.child("Address").getValue(String.class));
+
+                            if (!snapshot.hasChild("ProfilePhoto")) {
+                                modal.setProfilePhoto("https://firebasestorage.googleapis.com/v0/b/sm-jewels.appspot.com/o/img_162044.png?alt=media&token=c5445416-61d0-4ea7-90e7-a77a5e65cd09");
+                            }
+
                             adapter.add(modal);
                         }
 

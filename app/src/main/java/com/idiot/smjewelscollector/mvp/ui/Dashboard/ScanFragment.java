@@ -92,7 +92,7 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
                 if (snapshot.hasChild(text)){
                     Toasty.success(getContext(),"Hello").show();
                     String userID = snapshot.child(text).child("UserID").getValue(String.class);
-                    String planName = snapshot.child(text).child("Plan").getValue(String.class);
+                    String planName = snapshot.child(text).child("PlanName").getValue(String.class);
                     String phone = snapshot.child(text).child("Phone").getValue(String.class);
 
                     CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();

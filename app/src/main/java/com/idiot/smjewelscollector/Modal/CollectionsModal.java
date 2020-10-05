@@ -6,17 +6,19 @@ public class CollectionsModal {
     private String Phone;
     private String ProfilePhoto;
     private String PlanName;
+    private String Address;
+
 
     public CollectionsModal() {
     }
 
 
-
-    public CollectionsModal(String name, String phone, String profilePhoto, String planName) {
+    public CollectionsModal(String name, String phone, String profilePhoto, String planName, String address) {
         Name = name;
         Phone = phone;
         ProfilePhoto = profilePhoto;
         this.PlanName = planName;
+        this.Address = address;
     }
 
     public String getPlanName() {
@@ -49,5 +51,13 @@ public class CollectionsModal {
 
     public void setProfilePhoto(String profilePhoto) {
         ProfilePhoto = profilePhoto;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
     }
 }

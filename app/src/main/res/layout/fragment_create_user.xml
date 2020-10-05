@@ -68,7 +68,7 @@
                         android:background="@drawable/edittext_grey_border"
                         android:fontFamily="@font/montserrat_medium"
                         android:hint="ID"
-                        android:inputType="textPersonName"
+                        android:inputType="number"
                         android:padding="16dp"
                         android:textColor="@color/colorBlack" />
 
@@ -160,6 +160,8 @@
                         android:fontFamily="@font/montserrat_medium"
                         android:hint="Date of Birth"
                         android:textSize="14sp"
+                        android:editable="false"
+                        android:focusable="false"
                         android:padding="16dp"
                         android:textColor="@color/colorBlack" />
 

@@ -42,6 +42,7 @@ public class CollectionsAdapter extends ArrayAdapter<CollectionsModal> {
         CircleImageView photo= convertView.findViewById(R.id.single_collection_photo);
 
         name.setText(modal.getName());
+        Address.setText(modal.getAddress());
         planName.setText(modal.getPlanName());
         Glide
                 .with(getContext())

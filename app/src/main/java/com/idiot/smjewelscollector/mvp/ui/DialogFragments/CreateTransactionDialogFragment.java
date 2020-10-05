@@ -101,14 +101,21 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child(planName).child("UsersList").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(planName).child("UsersList").child("Set1").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mBinding.userNameCreateTransaction.setText(snapshot.child("Name").getValue(String.class));
-                Glide
-                        .with(getContext())
-                        .load(snapshot.child("ProfilePhoto").getValue(String.class))
-                        .into(mBinding.userPhotoCreateTransaction);
+                if (snapshot.hasChild("ProfilePhoto")) {
+                    Glide
+                            .with(getContext())
+                            .load(snapshot.child("ProfilePhoto").getValue(String.class))
+                            .into(mBinding.userPhotoCreateTransaction);
+                } else {
+                    Glide
+                            .with(getContext())
+                            .load("https://firebasestorage.googleapis.com/v0/b/sm-jewels.appspot.com/o/img_162044.png?alt=media&token=c5445416-61d0-4ea7-90e7-a77a5e65cd09")
+                            .into(mBinding.userPhotoCreateTransaction);
+                }
             }
 
             @Override
@@ -141,11 +148,13 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child(planName)
-                .child("UsersList").child(userID);
+                .child("UsersList").child("Set1").child(userID);
         databaseReference.child("Transactions").push().setValue(paymentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                sendSMSToUser(phone,amount,date);
+                //sendSMSToUser(phone,amount,date);
+
+                updateTransactionInfo();
             }
         });
 
@@ -179,7 +188,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                 stringBuffer.append(line);
             }
             rd.close();
-            updateTransactionInfo(); //To Update Completed Months Etc
+            //To Update Completed Months Etc
             return stringBuffer.toString();
 
         } catch (Exception e) {
@@ -198,19 +207,21 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long planAmount = snapshot.child("PlanAmount").getValue(long.class);
-                if (snapshot.child("UsersList").child(userID).hasChild("CompletedMonths")) {
-                    long completedMonths = snapshot.child("UsersList").child(userID).child("CompletedMonths").getValue(Long.class);
-                    completedMonths++;
-                    databaseReference.child("UsersList").child(userID).child("CompletedMonths").setValue(completedMonths);
-                    databaseReference.child("UsersList").child(userID).child("TotalAmount").setValue((int) completedMonths * planAmount);
-                    databaseReference.child("UsersList").child(userID).child("TotalTransactions").setValue(completedMonths);
+                if (snapshot.child("UsersList").child("Set1").child(userID).hasChild("CompletedMonths")) {
+                    long completedMonths = snapshot.child("UsersList").child("Set1").child(userID).child("CompletedMonths").getValue(Long.class);
+                    completedMonths = completedMonths + 1;
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("CompletedMonths").setValue(completedMonths);
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalAmount").setValue((int) completedMonths * planAmount);
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalTransactions").setValue(completedMonths);
 
                 } else {
-                    databaseReference.child("UsersList").child(userID).child("CompletedMonths").setValue(1);
-                    databaseReference.child("UsersList").child(userID).child("TotalAmount").setValue(planAmount);
-                    databaseReference.child("UsersList").child(userID).child("TotalTransactions").setValue(1);
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("CompletedMonths").setValue(1);
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalAmount").setValue(planAmount);
+                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalTransactions").setValue(1);
                 }
 
+                Toasty.success(getContext(), "Transaction Successfull").show();
+                dismiss();
 
             }
 

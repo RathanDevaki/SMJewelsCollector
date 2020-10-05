@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
@@ -66,6 +67,8 @@ public class LoginFragment extends Fragment implements SplashContract.View {
     private String userUniqueID;
     private String Name;
 
+    String phoneNumber;
+
 
     public LoginFragment() {
         // Required empty public constructor
@@ -88,6 +91,10 @@ public class LoginFragment extends Fragment implements SplashContract.View {
     }
 
     private void init() {
+
+        //Initialize Ad Banner
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mBinding.loginAdBanner.loadAd(adRequest);
 
         mAuth = FirebaseAuth.getInstance();
         //Bottom Sheet
@@ -149,7 +156,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(userID)) {
-                    String phoneNumber = snapshot.child(userID).child("Phone").getValue(String.class);
+                    phoneNumber = snapshot.child(userID).child("Phone").getValue(String.class);
                     //Toast.makeText(context,"Phone Number=>"+phoneNumber,Toast.LENGTH_LONG).show();
                    Name = snapshot.child(userID).child("Name").getValue(String.class);
                     Toasty.info(getContext(),"Hellow"+Name+" An OTP will be sent to your number",Toasty.LENGTH_SHORT).show();
@@ -208,6 +215,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             mVerificationId = s;
             mBinding.progressBar.setVisibility(View.GONE);
+            mBinding.bottomSheet.otpMessageView.append(" " + phoneNumber);
             Toasty.info(getContext(), "OTP sent", Toast.LENGTH_SHORT).show();
         }
     };

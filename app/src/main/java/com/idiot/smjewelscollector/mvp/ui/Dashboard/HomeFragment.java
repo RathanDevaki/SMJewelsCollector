@@ -19,7 +19,7 @@ import com.idiot.smjewelscollector.mvp.ui.CreateUser.CreateUserFragment;
 
 public class HomeFragment extends Fragment implements DashboardContract.View, BottomNavigationView.OnNavigationItemSelectedListener {
 
-    FragmentHomeBinding mBinding;
+    public FragmentHomeBinding mBinding;
     DashboardPresenter mPresenter;
 
 

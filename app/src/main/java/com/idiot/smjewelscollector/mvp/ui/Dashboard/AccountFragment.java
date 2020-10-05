@@ -57,7 +57,7 @@ public class AccountFragment extends Fragment implements DashboardContract.View 
        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mPresenter.signOut(getActivity());
+                mPresenter.signOut(getActivity());
             }
         });
     }
@@ -68,17 +68,17 @@ public class AccountFragment extends Fragment implements DashboardContract.View 
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child(preferences.getString("Plan","")).child("UsersList")
-                .child(preferences.getString("UserKey","")).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("CollectorsInfo").child("coll_202008001").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mBinding.userIdProfile.setText(snapshot.child("ID").getValue(Long.class).toString());
-                mBinding.userNameProfile.setText(snapshot.child("Name").getValue(String.class));
+                mBinding.collectorIdProfile.setText(snapshot.child("Collector_ID").getValue(String.class).toString());
+                mBinding.collectorNameProfile.setText(snapshot.child("Name").getValue(String.class));
                 Glide
                         .with(getContext())
                         .load(snapshot.child("ProfilePhoto").getValue(String.class))
-                        .into(mBinding.userPhotoProfile);
-                generateQRCode(snapshot.child("ID").getValue(Long.class).toString());
+                        .into(mBinding.collectorPhotoProfile);
+
+                generateQRCode(snapshot.child("Collector_ID").getValue(String.class).toString());
             }
 
             @Override
@@ -92,7 +92,7 @@ public class AccountFragment extends Fragment implements DashboardContract.View 
     private void generateQRCode(String id) {
 
         Bitmap myBitmap = QRCode.from(id).withSize(200,200).bitmap();
-        mBinding.userCodeProfile.setImageBitmap(myBitmap);
+        mBinding.collectorCodeProfile.setImageBitmap(myBitmap);
 
     }
 

@@ -47,7 +47,7 @@
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:id="@+id/user_photo_profile"
+                        android:id="@+id/collector_photo_profile"
                         android:layout_gravity="center_horizontal"/>
 
                     <TextView
@@ -59,7 +59,7 @@
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:textColor="@color/colorBlack"
-                        android:id="@+id/user_name_profile"/>
+                        android:id="@+id/collector_name_profile" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
                         android:textSize="14sp"
                         android:layout_marginTop="4dp"
                         android:fontFamily="@font/montserrat_medium"
-                        android:id="@+id/user_id_profile"/>
+                        android:id="@+id/collector_id_profile" />
 
 
                     <androidx.cardview.widget.CardView
@@ -85,7 +85,7 @@
                             android:layout_height="match_parent"
                             android:layout_margin="12dp"
                             android:scaleType="fitXY"
-                            android:id="@+id/user_code_profile"/>
+                            android:id="@+id/collector_code_profile" />
 
                     </androidx.cardview.widget.CardView>
 
