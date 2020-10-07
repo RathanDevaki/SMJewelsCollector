@@ -263,9 +263,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
     private void saveUserID() { // Save user ID and Plan Name in shared Preferences for future use
         SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-       // editor.putString("UserKey",userUniqueID);
-        //editor.putString("UserID",mBinding.userIdEt.getText().toString());
-        //editor.putString("Plan",Name);
+        editor.putString("UserID", mBinding.userIdEt.getText().toString());
         editor.commit();
     }
 

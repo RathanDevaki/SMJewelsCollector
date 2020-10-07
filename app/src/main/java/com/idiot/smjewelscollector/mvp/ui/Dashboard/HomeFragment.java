@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.idiot.smjewelscollector.R;
 import com.idiot.smjewelscollector.databinding.FragmentHomeBinding;
 import com.idiot.smjewelscollector.mvp.ui.CreateUser.CreateUserFragment;
+import com.idiot.smjewelscollector.mvp.ui.Transactions.TransactionsListFragment;
 
 public class HomeFragment extends Fragment implements DashboardContract.View, BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -67,12 +68,14 @@ public class HomeFragment extends Fragment implements DashboardContract.View, Bo
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment;
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.collection_list_menu:
                 fragment = new CollectionListFragment();
                 loadFragment(fragment);
                 return true;
             case R.id.transactions_list_menu:
+                fragment = new TransactionsListFragment();
+                loadFragment(fragment);
                 return true;
             case R.id.scan_menu:
                 fragment = new ScanFragment();

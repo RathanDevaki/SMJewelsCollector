@@ -1,6 +1,8 @@
 package com.idiot.smjewelscollector.mvp.ui.DialogFragments;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -47,6 +49,13 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
     String phone;
     String planName;
     String userID;
+    String ID;
+    String setName;
+
+    DatabaseReference databaseReference;
+
+    String amount;
+    Double grams;
 
 
     public CreateTransactionDialogFragment() {
@@ -78,13 +87,12 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
 
         planName = getArguments().getString("PlanName");
         phone = getArguments().getString("Phone");
-        String ID = getArguments().getString("ID");
+        ID = getArguments().getString("ID");
         userID = getArguments().getString("UserID");
 
-        Log.v("TAG","PlanName=>"+planName + "\n"
-         + "Phone=>" + phone + "\n"
-        + "ID=>" + ID + "\n"
-        + "userID=>" + userID);
+        if (planName.compareToIgnoreCase("PlanA") == 0) {
+            setName = getArguments().getString("SetName");
+        }
 
         mBinding.userPlanCreateTransaction.setText(planName);
         mBinding.userIdCreateTransaction.setText(ID);
@@ -96,12 +104,20 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
             @Override
             public void onClick(View view) {
                 createTransaction();
+
+                sendSMSToUser("8123022771", "500", "12/08/2020");
             }
         });
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child(planName).child("UsersList").child("Set1").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        if (planName.compareToIgnoreCase("PlanA") == 0) {
+            databaseReference = firebaseDatabase.getReference().child(planName).child("UsersList").child(setName).child(userID);
+        } else {
+            databaseReference = firebaseDatabase.getReference().child(planName).child("UsersList").child(userID);
+        }
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mBinding.userNameCreateTransaction.setText(snapshot.child("Name").getValue(String.class));
@@ -124,7 +140,6 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
             }
         });
 
-
     }
 
     private String getDateAndTime() {
@@ -137,39 +152,99 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
 
     private void createTransaction() {
 
-        final String amount = mBinding.userAmountCreateTransaction.getText().toString();
+        amount = mBinding.userAmountCreateTransaction.getText().toString();
         String comment = mBinding.userCommentsCreateTransaction.getText().toString();
         final String date = mBinding.userDateCreateTransaction.getText().toString();
 
-        HashMap<String,String> paymentMap = new HashMap<>();
-        paymentMap.put("Amount",amount);
-        paymentMap.put("Comments",comment);
-        paymentMap.put("Date",date);
+        HashMap<String, String> paymentMap = new HashMap<>();
+        paymentMap.put("Amount", amount);
+        paymentMap.put("Comments", comment);
+        paymentMap.put("Date", date);
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child(planName)
-                .child("UsersList").child("Set1").child(userID);
-        databaseReference.child("Transactions").push().setValue(paymentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //sendSMSToUser(phone,amount,date);
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-                updateTransactionInfo();
-            }
-        });
+        if (planName.compareToIgnoreCase("PlanA") == 0) {
+            DatabaseReference databaseReference1 = firebaseDatabase.getReference().child(planName)
+                    .child("UsersList").child(setName).child(userID);
 
+            databaseReference1.child("Transactions").push().setValue(paymentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    sendSMSToUser(phone, amount, date);
+                    updateTransactionInfo();
+                }
+            });
+        } else if (planName.compareToIgnoreCase("PlanB") == 0) {
+            DatabaseReference databaseReference1 = firebaseDatabase.getReference().child(planName)
+                    .child("UsersList").child(userID);
+            databaseReference1.child("Transactions").push().setValue(paymentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+
+                    Toasty.success(getContext(), "Payment Successfull").show();
+                }
+            });
+
+            DatabaseReference databaseReference2 = firebaseDatabase.getReference().child("PlanB").child("GoldRate");
+            databaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    final Double goldRate = snapshot.getValue(Double.class);
+                    int _amount = Integer.parseInt(amount);
+                    grams = _amount / goldRate;
+
+                    final DatabaseReference databaseReference3 = firebaseDatabase.getReference().child("PlanB")
+                            .child("UsersList").child(userID);
+                    databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.hasChild("GoldSaved")) {
+                                Double goldSaved = snapshot.child("GoldSaved").getValue(Double.class);
+                                goldSaved = goldSaved + grams;
+                                databaseReference3.child("GoldSaved").setValue(goldSaved);
+                            } else {
+                                databaseReference3.child("GoldSaved").setValue(grams);
+
+                            }
+
+                            dismiss();
+                            sendSMSToUser(phone, amount, date);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }
+
+        //Update Transactions info in collector node
+        SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        DatabaseReference databaseReference1 = firebaseDatabase.getReference().child("CollectorsInfo")
+                .child(preferences.getString("UserID", ""));
+        paymentMap.put("UserID", ID);
+        databaseReference1.child("Transactions").push().setValue(paymentMap);
 
     }
 
     private String sendSMSToUser(String phone, String amount, String date) {
-        Toasty.success(getContext(),"SMS snet to:"+phone).show();
+
         try {
 
             //App Message
             String appMessage = "Dear " + mBinding.userNameCreateTransaction + ",\n" + "Payment Recieved successfully  of Rs." + amount + "/-  toward your plan.\nDated: " + date + "\nRegargs SMJW";
 
             // Construct data
-            String apiKey = "apikey=" + "AcGtwQxa1rc-YJSR88WGwMRk3mQhm4i8O9CxoehJ01";
+            String apiKey = "apikey=" + "AcGtwQxa1rc-qwsAmGEK7uZZThc0hOehHa1uwjRWYw";
             String message = "&message=" + appMessage;
             String sender = "&sender=" + "TXTLCL";
             String numbers = "&numbers=" + "91" + phone;
@@ -189,6 +264,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
             }
             rd.close();
             //To Update Completed Months Etc
+            Toasty.success(getContext(), "SMS sentt to:" + phone).show();
             return stringBuffer.toString();
 
         } catch (Exception e) {
@@ -206,6 +282,8 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
                 long planAmount = snapshot.child("PlanAmount").getValue(long.class);
                 if (snapshot.child("UsersList").child("Set1").child(userID).hasChild("CompletedMonths")) {
                     long completedMonths = snapshot.child("UsersList").child("Set1").child(userID).child("CompletedMonths").getValue(Long.class);

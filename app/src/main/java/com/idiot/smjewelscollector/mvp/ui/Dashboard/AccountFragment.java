@@ -68,7 +68,7 @@ public class AccountFragment extends Fragment implements DashboardContract.View 
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child("CollectorsInfo").child("coll_202008001").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("CollectorsInfo").child(preferences.getString("UserID", "")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mBinding.collectorIdProfile.setText(snapshot.child("Collector_ID").getValue(String.class).toString());

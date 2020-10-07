@@ -90,20 +90,26 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(text)){
-                    Toasty.success(getContext(),"Hello").show();
+                    Toasty.success(getContext(), "Hello").show();
                     String userID = snapshot.child(text).child("UserID").getValue(String.class);
                     String planName = snapshot.child(text).child("PlanName").getValue(String.class);
                     String phone = snapshot.child(text).child("Phone").getValue(String.class);
 
+                    Bundle args = new Bundle();
+
+                    if (planName.compareToIgnoreCase("PlanA") == 0) {
+                        String setName = snapshot.child(text).child("SetName").getValue(String.class);
+                        args.putString("SetName", setName);
+                    }
+
                     CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    Bundle args = new Bundle();
-                    args.putString("UserID",userID);
-                    args.putString("PlanName",planName);
-                    args.putString("Phone",phone);
-                    args.putString("ID",text);
+                    args.putString("UserID", userID);
+                    args.putString("PlanName", planName);
+                    args.putString("Phone", phone);
+                    args.putString("ID", text);
                     dialogFragment.setArguments(args);
-                    Fragment prev =getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+                    Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
                     if (prev != null) {
                         ft.remove(prev);
                     }

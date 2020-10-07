@@ -24,7 +24,10 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CAMERA
+            android.Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECEIVE_SMS
     };
 
     public SplashFragment() {
