@@ -103,7 +103,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
         mBinding.getOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(mBinding.userIdEt.getText()) || mBinding.userIdEt.getText().length() < 9) {
+                if (TextUtils.isEmpty(mBinding.userIdEt.getText())) {
                     mBinding.userIdEt.setError("Invalid ID");
                 } else {
                     getPhoneNumber(mBinding.userIdEt.getText().toString());
@@ -141,15 +141,28 @@ public class LoginFragment extends Fragment implements SplashContract.View {
     //To Load and display images into image slider
     private void displayImageSlider() {
         List<SlideModel> slideModels = new ArrayList<>();
-        slideModels.add(new SlideModel("https://images.freekaamaal.com/post_images/1569908385.png"));
-        slideModels.add(new SlideModel("https://images.freekaamaal.com/post_images/1569908385.png"));
-        slideModels.add(new SlideModel("https://images.freekaamaal.com/post_images/1569908385.png"));
-        slideModels.add(new SlideModel("https://images.freekaamaal.com/post_images/1569908385.png"));
+        slideModels.add(new SlideModel("https://smjewels.in/wp-content/uploads/2019/04/web-banner01.jpg"));
+        slideModels.add(new SlideModel("https://smjewels.in/wp-content/uploads/2019/04/web-banner02.jpg"));
+        slideModels.add(new SlideModel("https://smjewels.in/wp-content/uploads/2019/04/web-banner03.jpg"));
+        slideModels.add(new SlideModel("https://smjewels.in/wp-content/uploads/2019/04/g-5.jpg"));
+        slideModels.add(new SlideModel("https://smjewels.in/wp-content/uploads/2019/04/g-3.jpg"));
         mBinding.loginSlider.setImageList(slideModels, true);
     }
 
-    public void getPhoneNumber(final String userID) {
+    public void progress_visiblity() {
         mBinding.progressBar.setVisibility(View.VISIBLE);
+        mBinding.getOtp.setVisibility(View.GONE);
+
+    }
+
+    public void progress_hidden() {
+        mBinding.progressBar.setVisibility(View.GONE);
+        mBinding.getOtp.setVisibility(View.VISIBLE);
+
+    }
+
+    public void getPhoneNumber(final String userID) {
+        progress_visiblity();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child("CollectorsInfo");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -158,13 +171,13 @@ public class LoginFragment extends Fragment implements SplashContract.View {
                 if (snapshot.hasChild(userID)) {
                     phoneNumber = snapshot.child(userID).child("Phone").getValue(String.class);
                     //Toast.makeText(context,"Phone Number=>"+phoneNumber,Toast.LENGTH_LONG).show();
-                   Name = snapshot.child(userID).child("Name").getValue(String.class);
-                    Toasty.info(getContext(),"Hellow"+Name+" An OTP will be sent to your number",Toasty.LENGTH_SHORT).show();
+                    Name = snapshot.child(userID).child("Name").getValue(String.class);
+                    Toasty.success(getContext(), "Hello " + Name + "", Toast.LENGTH_LONG).show();
                     //userUniqueID = snapshot.child(userID).child("UserID").getValue(String.class);
                     sendOtp(phoneNumber); // Sending OTP to the number
                 } else {
                     Toasty.error(getContext(), "User Does not exist. Please Register", Toast.LENGTH_SHORT).show();
-                    mBinding.progressBar.setVisibility(View.GONE);
+                    progress_hidden();
                 }
             }
 
@@ -176,7 +189,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
     }
 
     private void sendOtp(String phoneNumber) {
-        mBinding.progressBar.setVisibility(View.VISIBLE);
+        progress_visiblity();
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+91" + phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -190,7 +203,7 @@ public class LoginFragment extends Fragment implements SplashContract.View {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
             //progress.setVisibility(View.GONE);
-            mBinding.progressBar.setVisibility(View.GONE);
+            progress_hidden();
             Toasty.success(getContext(), "verification completed", Toast.LENGTH_SHORT).show();
             String code = phoneAuthCredential.getSmsCode();
             if (code != null) {
@@ -204,17 +217,17 @@ public class LoginFragment extends Fragment implements SplashContract.View {
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
             //progress.setVisibility(View.GONE);
-            mBinding.progressBar.setVisibility(View.GONE);
+            progress_hidden();
             Toasty.error(getContext(), "verification failed", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            mBinding.progressBar.setVisibility(View.VISIBLE);
+            progress_visiblity();
             super.onCodeSent(s, forceResendingToken);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             mVerificationId = s;
-            mBinding.progressBar.setVisibility(View.GONE);
+            progress_hidden();
             mBinding.bottomSheet.otpMessageView.append(" " + phoneNumber);
             Toasty.info(getContext(), "OTP sent", Toast.LENGTH_SHORT).show();
         }
@@ -222,6 +235,8 @@ public class LoginFragment extends Fragment implements SplashContract.View {
 
     private void verifyVerificationCode(String code) {
         //creating the credential
+        mBinding.bottomSheet.progressBarOtp.setVisibility(View.VISIBLE);
+        mBinding.bottomSheet.verifyOtp.setVisibility(View.GONE);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
         //signing the user
         signInWithPhoneAuthCredential(credential);
@@ -243,11 +258,13 @@ public class LoginFragment extends Fragment implements SplashContract.View {
                         String message = "Somthing is wrong, we will fix it soon...";
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
 
-                           // message = "Incorrect OTP";
+                            // message = "Incorrect OTP";
 
-                            Toast toasty=Toast.makeText(getContext(), "Incorrect OTP", Toast.LENGTH_LONG);
+                            Toast toasty = Toast.makeText(getContext(), "Incorrect OTP", Toast.LENGTH_LONG);
                             toasty.setGravity(Gravity.CENTER, 0, 0);
                             toasty.show();
+                            mBinding.bottomSheet.progressBarOtp.setVisibility(View.GONE);
+                            mBinding.bottomSheet.verifyOtp.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -257,7 +274,6 @@ public class LoginFragment extends Fragment implements SplashContract.View {
                 }
             }
         });
-
     }
 
     private void saveUserID() { // Save user ID and Plan Name in shared Preferences for future use

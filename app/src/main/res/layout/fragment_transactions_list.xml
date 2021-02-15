@@ -27,115 +27,210 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    app:cardCornerRadius="16dp"
-                    android:layout_marginEnd="8dp"
-                    app:cardElevation="0dp">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="16dp"
-                        android:orientation="vertical">
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="16dp"
+                        android:layout_marginEnd="4dp"
+                        app:cardElevation="0dp">
 
-
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Collections"
-                            android:textColor="@color/colorWhite"
                             android:layout_gravity="center"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:textSize="14sp" />
+                            android:padding="12dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/total_transactions_count"
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Collections"
+                                android:textColor="@color/colorWhite"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/total_transactions_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:layout_gravity="center"
+                                android:textColor="@color/colorWhite"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:textSize="18dp" />
+
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="16dp"
+                        android:layout_marginStart="4dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="24"
                             android:layout_gravity="center"
-                            android:textColor="@color/colorWhite"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:textSize="18dp" />
+                            android:padding="12dp"
+                            android:orientation="vertical">
 
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Collected Amount"
+                                android:textColor="@color/colorWhite"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:textSize="14sp" />
 
-                </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:id="@+id/total_collected_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:text="0"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="18dp" />
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    app:cardCornerRadius="16dp"
-                    android:layout_marginStart="8dp"
-                    app:cardElevation="0dp">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="16dp"
-                        android:orientation="vertical">
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="16dp"
+                        android:layout_marginEnd="4dp"
+                        app:cardElevation="0dp">
 
-
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Collected Amount"
-                            android:textColor="@color/colorWhite"
                             android:layout_gravity="center"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:textSize="14sp" />
+                            android:padding="12dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/total_collected_amount"
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today's Collections\n"
+                                android:textColor="@color/colorWhite"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/today_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:text="0"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="18dp" />
+
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="16dp"
+                        android:layout_marginStart="4dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="24"
                             android:layout_gravity="center"
-                            android:textColor="@color/colorWhite"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="@font/montserrat_semi_bold"
-                            android:textSize="18dp" />
+                            android:padding="12dp"
+                            android:orientation="vertical">
 
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today's Collected amount"
+                                android:textColor="@color/colorWhite"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:textSize="14sp" />
 
-                </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:id="@+id/today_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/montserrat_semi_bold"
+                                android:text="0"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="18dp" />
 
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Collection History"
+                    android:textSize="16sp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textColor="@color/black" />
+
+                <com.idiot.smjewelscollector.mvp.utils.NonScrollingListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/collections_list_view"
+                    android:divider="@null"
+                    android:scrollbars="none" />
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Collection History"
-                android:textSize="16sp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:textColor="@color/black" />
-
-            <com.idiot.smjewelscollector.mvp.utils.NonScrollingListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:id="@+id/collections_list_view"
-                android:divider="@null"
-                android:scrollbars="none" />
-
         </LinearLayout>
-
     </ScrollView>
 
 

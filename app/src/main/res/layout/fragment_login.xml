@@ -23,12 +23,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    app:corner_radius="12"
+                    app:corner_radius="8"
                     app:delay="0"
+                    android:scaleType="fitXY"
                     app:auto_cycle="true"
                     app:period="1000"
                     android:layout_marginBottom="16dp"
-                    app:placeholder="@drawable/error">
+                    app:placeholder="@drawable/smj1">
 
                 </com.denzcoskun.imageslider.ImageSlider>
 
@@ -41,8 +42,8 @@
                     android:layout_margin="36dp">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
                         android:src="@drawable/logo"
                         android:layout_gravity="center_horizontal" />
 
@@ -70,7 +71,8 @@
                         android:textColor="@color/colorWhite"
                         android:fontFamily="@font/montserrat_bold"
                         android:textAllCaps="false"
-                        android:id="@+id/get_otp" />
+                        android:id="@+id/get_otp"
+                        android:visibility="visible" />
 
                     <ProgressBar
                         android:id="@+id/progress_bar"

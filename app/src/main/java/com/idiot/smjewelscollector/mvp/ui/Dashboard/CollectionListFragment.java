@@ -1,11 +1,14 @@
 package com.idiot.smjewelscollector.mvp.ui.Dashboard;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,24 +70,30 @@ public class CollectionListFragment extends Fragment implements DashboardContrac
     }
 
     private void fetchData() {
-
+        //pushDummyData();
+        SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String userKey = preferences.getString("UserKey", "");
+        Log.v("userkeyy", userKey);
         List<CollectionsModal> list = new ArrayList<>();
-        final CollectionsAdapter adapter = new CollectionsAdapter(getContext(),R.layout.single_collection_list_card,list);
+        final CollectionsAdapter adapter = new CollectionsAdapter(getContext(), R.layout.single_collection_list_card, list);
         mBinding.collectionListGrid.setAdapter(adapter);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child("CollectorsInfo").child("coll_202008001");
+        Log.v("fhfhdhhd", userKey);
+
         final DatabaseReference databaseReference1 = firebaseDatabase.getReference();
         databaseReference.child("AssignedUsers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     String key = snapshot1.getKey();
                     final String value = snapshot1.getValue(String.class);
 
                     databaseReference1.child(value).child("UsersList").child("Set1").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                             CollectionsModal modal = snapshot.getValue(CollectionsModal.class);
                             modal.setPlanName(value);
                             modal.setAddress(snapshot.child("Address").getValue(String.class));
@@ -114,15 +123,16 @@ public class CollectionListFragment extends Fragment implements DashboardContrac
 
     }
 
-    private void pushDummyData() {
+  /*  private void pushDummyData() {
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("CollectorsInfo").child("coll_202008001");
-        databaseReference.child("AssignedUsers").child("-MEDR8d8JeyY-6EtvLPZ").setValue("PlanA");
-        databaseReference.child("AssignedUsers").child("-MEDRFYQdXd--r5HnKzw").setValue("PlanA");
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child("CollectorsInfo").child("20200800001");
+        databaseReference.child("Name").child("Node").child("dummy").setValue("Load");
+       /* databaseReference.child("AssignedUsers").child("-MEDRFYQdXd--r5HnKzw").setValue("PlanA");
         databaseReference.child("AssignedUsers").child("-MEDRHch_dwJoF8u4-u6").setValue("PlanA");
         databaseReference.child("AssignedUsers").child("-MEDRJN8VF-pSmyE6ew6").setValue("PlanA");
 
-    }
+    }*/
 
     @Override
     public void onSuccess(String message) {

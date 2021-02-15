@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Abhishek Das R"
+                android:text="IamAdmin"
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:textColor="@color/colorBlack"
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#152, 1st Stage, 3rd Cross, Kuvempunagar, Mysore"
+                android:text="Kuvempunagar, Mysore"
                 android:fontFamily="@font/montserrat_medium"
                 android:textSize="12sp"
                 android:layout_gravity="center"

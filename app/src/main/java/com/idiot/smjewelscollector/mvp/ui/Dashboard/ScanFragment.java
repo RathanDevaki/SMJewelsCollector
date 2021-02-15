@@ -1,5 +1,6 @@
 package com.idiot.smjewelscollector.mvp.ui.Dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.google.zxing.Result;
 import com.idiot.smjewelscollector.R;
 import com.idiot.smjewelscollector.databinding.FragmentScanBinding;
 import com.idiot.smjewelscollector.mvp.ui.DialogFragments.CreateTransactionDialogFragment;
+import com.idiot.smjewelscollector.mvp.utils.NavigationUtil;
 
 import es.dmoral.toasty.Toasty;
 
@@ -89,34 +91,40 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
         databaseReference.child("UsersList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.hasChild(text)){
-                    Toasty.success(getContext(), "Hello").show();
-                    String userID = snapshot.child(text).child("UserID").getValue(String.class);
-                    String planName = snapshot.child(text).child("PlanName").getValue(String.class);
-                    String phone = snapshot.child(text).child("Phone").getValue(String.class);
+                if (text != "") {
+                    if (snapshot.hasChild(text)) {
+                        // Toasty.success(getContext(), "Scan User").show();
+                        String userID = snapshot.child(text).child("UserID").getValue(String.class);
+                        String planName = snapshot.child(text).child("PlanName").getValue(String.class);
+                        String phone = snapshot.child(text).child("Phone").getValue(String.class);
 
-                    Bundle args = new Bundle();
+                        Bundle args = new Bundle();
 
-                    if (planName.compareToIgnoreCase("PlanA") == 0) {
-                        String setName = snapshot.child(text).child("SetName").getValue(String.class);
-                        args.putString("SetName", setName);
+                        if (planName.compareToIgnoreCase("PlanA") == 0) {
+                            String setName = snapshot.child(text).child("SetName").getValue(String.class);
+                            args.putString("SetName", setName);
+                        }
+
+                        CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();
+
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
+                        args.putString("UserID", userID);
+                        args.putString("PlanName", planName);
+                        args.putString("Phone", phone);
+                        args.putString("ID", text);
+                        dialogFragment.setArguments(args);
+                        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+
+                        ft.addToBackStack(null);
+                        dialogFragment.show(ft, "dialog");
+
+                    } else {
+                        Toasty.error(getContext(), "Invalid Code Scanned").show();
                     }
-
-                    CreateTransactionDialogFragment dialogFragment = new CreateTransactionDialogFragment();
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    args.putString("UserID", userID);
-                    args.putString("PlanName", planName);
-                    args.putString("Phone", phone);
-                    args.putString("ID", text);
-                    dialogFragment.setArguments(args);
-                    Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        ft.remove(prev);
-                    }
-                    ft.addToBackStack(null);
-                    dialogFragment.show(ft, "dialog");
-                }else {
-                    Toasty.error(getContext(),"Invalid Code Scanned").show();
                 }
             }
 
@@ -126,6 +134,11 @@ public class ScanFragment extends Fragment implements DashboardContract.View {
             }
         });
 
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
     }
 
     @Override

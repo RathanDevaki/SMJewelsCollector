@@ -5,7 +5,10 @@ import android.content.Intent;
 
 import com.idiot.smjewelscollector.MainActivity;
 import com.idiot.smjewelscollector.databinding.ActivitySplashBinding;
+import com.idiot.smjewelscollector.mvp.ui.Dashboard.CollectionListFragment;
+import com.idiot.smjewelscollector.mvp.ui.DialogFragments.CreateTransactionDialogFragment;
 import com.idiot.smjewelscollector.mvp.ui.Login.LoginFragment;
+import com.idiot.smjewelscollector.mvp.ui.Transactions.TransactionsListFragment;
 import com.idiot.smjewelscollector.mvp.ui.splash.NoInternetFragment;
 import com.idiot.smjewelscollector.mvp.ui.splash.SplashFragment;
 
@@ -70,22 +73,26 @@ public enum NavigationUtil {
 
 
     public void setSplash(){
-        addFragment(new SplashFragment(), SplashFragment.class.getSimpleName(),false);
+        addFragment(new SplashFragment(), SplashFragment.class.getSimpleName(), false);
     }
 
-    public void toLogin(){
-        addFragment(new LoginFragment(), LoginFragment.class.getSimpleName(),true);
+    public void toLogin() {
+        addFragment(new LoginFragment(), LoginFragment.class.getSimpleName(), true);
     }
 
     public void toNoInternet() {
-        addFragment(new NoInternetFragment(),NoInternetFragment.class.getSimpleName(),false);
+        addFragment(new NoInternetFragment(), NoInternetFragment.class.getSimpleName(), false);
+    }
+
+    public void toCollectorList() {
+        addFragment(new TransactionsListFragment(), TransactionsListFragment.class.getSimpleName(), true);
     }
 
     /*public void toCreateAccount() {
         addFragment(new CreateAccountFragment(),CreateAccountFragment.class.getSimpleName(),true);
     }
 */
-    public void toMainActivity(){
+    public void toMainActivity() {
         Intent i = new Intent(getActivity(), MainActivity.class);
         getActivity().startActivity(i);
         getActivity().finish();
