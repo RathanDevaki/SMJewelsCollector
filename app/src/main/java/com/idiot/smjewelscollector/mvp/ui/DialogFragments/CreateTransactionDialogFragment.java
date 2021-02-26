@@ -194,7 +194,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                 }
             });
         }
-        if (planName.compareToIgnoreCase("PlanB") == 0) {
+        else if (planName.compareToIgnoreCase("PlanB") == 0) {
             Log.v("user IDDD", userID);
            /* databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -210,9 +210,15 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         //instAmt = snapshot.child("InstallmentAmount").getValue(Long.class);
                         instPeriod = snapshot.child("InstallmentPeriod").getValue(Long.class);
                         Log.v("inst period", String.valueOf(instPeriod));
+
                     } else {
                         // databaseReferenceI.child("InstallmentAmount").setValue(0);
                         databaseReferenceI.child("InstallmentPeriod").setValue(0);
+                    }
+                    if(instPeriod>0 && instPeriod< completedMonths)
+                    {
+                        databaseReferenceI.child("PlanCompletionStatus").setValue("Incomplete");
+                        databaseReference2.child("PlanCompletionStatus").child(ID).setValue("Incomplete");
                     }
                     if (instPeriod == 0) {
                         databaseReferenceI.child("PlanCompletionStatus").setValue("NA");
@@ -220,8 +226,6 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         mBinding.userWarning.setVisibility(View.VISIBLE);
                     } else if (instPeriod == completedMonths && instPeriod != 0) {
                         databaseReferenceI.child("PlanCompletionStatus").setValue("Completed");
-
-                        //------illi nodo
                         databaseReference2.child("PlanCompletionStatus").child(ID).setValue("Completed");
                         mBinding.allowPayment.setVisibility(View.GONE);
                         mBinding.userCompleted.setVisibility(View.VISIBLE);
@@ -235,7 +239,49 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                 }
             });
         }
+        else if (planName.compareToIgnoreCase("PlanC") == 0) {
+            Log.v("user IDDD", userID);
+            final DatabaseReference databaseReferenceI = firebaseDatabase.getReference().child("PlanC").child("UsersList").child(userID);
+            databaseReferenceI.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                    long completedMonths = snapshot.child("CompletedMonths").getValue(Long.class);
+                    long payable_amount=snapshot.child("InstallmentAmount").getValue(Long.class);
+                    Log.v("pay amt ", String.valueOf(payable_amount));
+                    mBinding.userAmountCreateTransaction.setHint("Due amount is Rs."+payable_amount);
+
+                    if (snapshot.hasChild("InstallmentPeriod")) {
+                        instAmt = snapshot.child("InstallmentAmount").getValue(Long.class);
+                        instPeriod = snapshot.child("InstallmentPeriod").getValue(Long.class);
+                        Log.v("inst period", String.valueOf(instPeriod));
+                    } else {
+                        databaseReferenceI.child("InstallmentPeriod").setValue(12);
+                    }
+                    if(instAmt>0 &&  completedMonths < instPeriod )
+                    {
+                        databaseReferenceI.child("PlanCompletionStatus").setValue("Incomplete");
+                        databaseReference2.child("PlanCompletionStatus").child(ID).setValue("Incomplete");
+                    }
+                    if (instAmt== 0) {
+                        databaseReferenceI.child("PlanCompletionStatus").setValue("NA");
+                        mBinding.allowPayment.setVisibility(View.GONE);
+                        mBinding.userWarning.setVisibility(View.VISIBLE);
+                    } else if (instPeriod == completedMonths && instPeriod != 0) {
+                        databaseReferenceI.child("PlanCompletionStatus").setValue("Completed");
+                        databaseReference2.child("PlanCompletionStatus").child(ID).setValue("Completed");
+                        mBinding.allowPayment.setVisibility(View.GONE);
+                        mBinding.userCompleted.setVisibility(View.VISIBLE);
+                        Toasty.success(getContext(), "The plan has completed", Toasty.LENGTH_LONG).show();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
 
     }
 
@@ -273,11 +319,13 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                     databaseReferenceAdmin.push().setValue(updateAdminTransaction).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            sendSMSToUser(phone, amount, date);
                             updateTransactionInfoA();
+
                             updateCollectorData();
                         }
                     });
-                    sendSMSToUser(phone, amount, date);
+
 
                 }
             });
@@ -305,26 +353,21 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
         //Plan B
         else if (planName.compareToIgnoreCase("PlanC") == 0) {
 
-            updatePlanCdata();
-           /* DatabaseReference databaseReference1 = firebaseDatabase.getReference().child(planName).child("UsersList").child(userID);
-
+            DatabaseReference databaseReference1 = firebaseDatabase.getReference().child(planName).child("UsersList").child(userID);
             databaseReference1.child("Transactions").push().setValue(paymentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     databaseReferenceAdmin.push().setValue(updateAdminTransaction).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-
-                            //updateCollectorData();
-                            // Toasty.success(getContext(), "Transaction Succesful").show();
-                            // Toast.makeText(getActivity(), "Please check the number you entered",Toast.LENGTH_LONG).show();
+                            updatePlanCdata();
+                            updateCollectorData();
 
                         }
                     });
                 }
-            }); */
+            });
 
-            //here it was
         }
 
         //Update Transactions info in collector node
@@ -336,13 +379,8 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
     }
 
     private void updatePlanCdata() {
-        Toasty.info(getContext(), "Plan C", Toasty.LENGTH_LONG).show();
-    }
-
-    public void updatePlanBdata() {
-
-
-        DatabaseReference databaseReference2 = firebaseDatabase.getReference().child("PlanB").child("GoldRate");
+        final DatabaseReference databaseReference2 = firebaseDatabase.getReference().child("PlanB").child("GoldRate");
+        final DatabaseReference databasereference4=firebaseDatabase.getReference().child("PlanC");
         databaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -351,13 +389,101 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                 int _amount = Integer.parseInt(amount);
                 grams = _amount / goldRate;
 
-                    final DatabaseReference databaseReference3 = firebaseDatabase.getReference().child("PlanB")
-                            .child("UsersList").child(userID);
+                databasereference4.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChild("TotalEarnings")) {
+                            Log.v("IN C","Has Total Earnings");
+                            long total_earnings = snapshot.child("TotalEarnings").getValue(Long.class);
+                            String paid_amount = mBinding.userAmountCreateTransaction.getText().toString();
+                            long _paid_amount = Long.parseLong(paid_amount);
+                            total_earnings = total_earnings + _paid_amount;
+                            databasereference4.child("TotalEarnings").setValue(total_earnings);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+                final DatabaseReference databaseReference3 = firebaseDatabase.getReference().child("PlanC").child("UsersList").child(userID);
+                databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        long completedMonths1 = 0;
+                        if (snapshot.hasChild("GoldSaved")) {
+                            Double goldSaved = snapshot.child("GoldSaved").getValue(Double.class);
+                            goldSaved = goldSaved + grams;
+                            databaseReference3.child("GoldSaved").setValue(goldSaved);
+                        } else {
+                            databaseReference3.child("GoldSaved").setValue(grams);
+                        }
+
+                        if (snapshot.hasChild("CompletedMonths")) {
+                            completedMonths1 = snapshot.child("CompletedMonths").getValue(Long.class);
+                            long totalAmount1 = Integer.parseInt(mBinding.userAmountCreateTransaction.getText().toString());
+                            //snapshot.child("InstallmentAmount").getValue(Long.class);
+                            completedMonths1 = completedMonths1 + 1;
+                            databaseReference3.child("CompletedMonths").setValue(completedMonths1);
+
+                            totalAmount1 = completedMonths1 * totalAmount1;
+                            databaseReference3.child("TotalAmount").setValue(totalAmount1);
+                            databaseReference3.child("TotalTransactions").setValue(completedMonths1);
+                        } else {
+                            Toasty.info(getContext(), "Something went wrong ", Toasty.LENGTH_LONG).show();
+                        }
+
+                        Toasty.success(getContext(), "Transaction Successfull").show();
+                        dismiss();
+                        //sendSMSToUser(phone, amount, date);
+
+                        NavigationUtilMain.INSTANCE.setUpHomeScreen();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void updatePlanBdata() {
+        final DatabaseReference databaseReference2 = firebaseDatabase.getReference().child("PlanB");
+        databaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                final Double goldRate = snapshot.child("GoldRate").getValue(Double.class);
+                int _amount = Integer.parseInt(amount);
+                grams = _amount / goldRate;
+
+
+                if(snapshot.hasChild("TotalEarnings")) {
+
+                    long total_earnings = snapshot.child("TotalEarnings").getValue(Long.class);
+                    String paid_amount = mBinding.userAmountCreateTransaction.getText().toString();
+                    long _paid_amount = Long.parseLong(paid_amount);
+                    total_earnings = total_earnings + _paid_amount;
+                    databaseReference2.child("TotalEarnings").setValue(total_earnings);
+                }
+
+                    final DatabaseReference databaseReference3 = firebaseDatabase.getReference().child("PlanB").child("UsersList").child(userID);
                     databaseReference3.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             long completedMonths1 = 0;
                             if (snapshot.hasChild("GoldSaved")) {
+
                                 Double goldSaved = snapshot.child("GoldSaved").getValue(Double.class);
                                 goldSaved = goldSaved + grams;
                                 databaseReference3.child("GoldSaved").setValue(goldSaved);
@@ -365,24 +491,24 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                                 databaseReference3.child("GoldSaved").setValue(grams);
 
                             }
+                            Log.v("Total Earnings out","Total Earnings B");
 
-                            if (snapshot.hasChild("CompletedMonths")) {
                                 completedMonths1 = snapshot.child("CompletedMonths").getValue(Long.class);
                                 long totalAmount1 = Integer.parseInt(mBinding.userAmountCreateTransaction.getText().toString());
                                 //snapshot.child("InstallmentAmount").getValue(Long.class);
                                 completedMonths1 = completedMonths1 + 1;
                                 databaseReference3.child("CompletedMonths").setValue(completedMonths1);
+                                long tot_amount=snapshot.child("TotalAmount").getValue(Long.class);
 
-                                totalAmount1 = completedMonths1 * totalAmount1;
+                                totalAmount1 =tot_amount + totalAmount1;
                                 databaseReference3.child("TotalAmount").setValue(totalAmount1);
                                 databaseReference3.child("TotalTransactions").setValue(completedMonths1);
-                            } else {
-                                Toasty.info(getContext(), "Something went wrong ", Toasty.LENGTH_LONG).show();
-                            }
+
 
                             Toasty.success(getContext(), "Transaction Successfull").show();
-                            dismiss();
                             //sendSMSToUser(phone, amount, date);
+                            dismiss();
+                            NavigationUtilMain.INSTANCE.setUpHomeScreen();
                         }
 
                         @Override
@@ -494,10 +620,20 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         mBinding.userCompleted.setVisibility(View.VISIBLE);
                         Toasty.success(getContext(), "The plan has completed", Toasty.LENGTH_LONG).show();
                     }
-                    completedMonths = completedMonths + 1;
-                    databaseReference.child("UsersList").child("Set1").child(userID).child("CompletedMonths").setValue(completedMonths);
-                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalAmount").setValue((int) completedMonths * planAmount);
-                    databaseReference.child("UsersList").child("Set1").child(userID).child("TotalTransactions").setValue(completedMonths);
+                    else {
+                        completedMonths = completedMonths + 1;
+                        if(snapshot.hasChild("TotalEarnings")) {
+                            Log.v("Total Earnings","Total Earnings");
+                            long total_earnings = snapshot.child("TotalEarnings").getValue(Long.class);
+                            String paid_amount = mBinding.userAmountCreateTransaction.getText().toString();
+                            long _paid_amount = Long.parseLong(paid_amount);
+                            total_earnings = total_earnings + _paid_amount;
+                            databaseReference.child("TotalEarnings").setValue(total_earnings);
+                        }
+                        databaseReference.child("UsersList").child("Set1").child(userID).child("CompletedMonths").setValue(completedMonths);
+                        databaseReference.child("UsersList").child("Set1").child(userID).child("TotalAmount").setValue((int) completedMonths * planAmount);
+                        databaseReference.child("UsersList").child("Set1").child(userID).child("TotalTransactions").setValue(completedMonths);
+                    }
 
                 } else {
                     databaseReference.child("UsersList").child("Set1").child(userID).child("CompletedMonths").setValue(1);
@@ -530,6 +666,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
             String sender = "&sender=" + "TXTLCL";
             String numbers = "&numbers=" + "91" + phone;
 
+            Log.v("SMS phone",numbers);
             // Send data
             HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
             String data = apiKey + numbers + message + sender;

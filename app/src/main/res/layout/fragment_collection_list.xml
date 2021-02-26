@@ -35,6 +35,7 @@
                 android:textSize="16sp"/>
 
             <GridView
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:numColumns="2"
@@ -46,8 +47,18 @@
                 android:layout_marginBottom="60dp"
                 android:id="@+id/collection_list_grid"/>
 
-
-
+            <TextView
+                android:visibility="gone"
+                android:layout_marginTop="160dp"
+                android:layout_gravity="center"
+                android:id="@+id/no_customer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="No customers assigned. \nPlease Contact our store."
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/montserrat_bold"
+                android:textSize="20sp"/>
 
         </LinearLayout>
 

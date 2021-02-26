@@ -374,12 +374,12 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
                                         if (snapshot.hasChild("PlanCompletionStatus")) {
                                             Log.v("PCS if", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("Incomplete");
-                                            Toasty.success(getContext(), "Account Created Successfully in Plan-A").show();
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                         } else {
                                             Log.v("PCS else", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("Incomplete");
-                                            Toasty.success(getContext(), "Account Created Successfully in Plan-A").show();
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                         }
                                     }
@@ -415,12 +415,13 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
                                         if (snapshot.hasChild("PlanCompletionStatus")) {
                                             Log.v("PCS if", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("NA");
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                             //   Toasty.info(getContext(),"has PCS",Toasty.LENGTH_LONG).show();
                                         } else {
                                             Log.v("PCS else", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("NA");
-                                            Toasty.success(getContext(), "Account Created Successfully in Plan-B").show();
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                             Log.v("PCS else done PlanB", "yes");
                                         }
@@ -435,13 +436,13 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
 
                             } else if (mBinding.planSpinner.getSelectedItem().toString().compareToIgnoreCase("PlanC") == 0) {
                                 Log.v("In Plan C", "yes");
-                                usersMap.put("InstallmentPeriod", 0);
+                                usersMap.put("InstallmentPeriod", 12);
                                 usersMap.put("InstallmentAmount", 0);
                                 usersMap.put("PlanCompletionStatus", "NA");
                                 databaseReference.child("PlanC").child("UsersList").child(pushKey).setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Log.v("onSuccess B", "yes");
+                                        Log.v("onSuccess c", "yes");
                                         databaseReference.child("UsersList").child(mBinding.userIdSignup.getText().toString()).setValue(userMap2);
                                     }
                                 });
@@ -453,12 +454,13 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
                                         if (snapshot.hasChild("PlanCompletionStatus")) {
                                             Log.v("PCS if", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("NA");
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                             // Toasty.info(getContext(),"has PCS",Toasty.LENGTH_LONG).show();
                                         } else {
                                             Log.v("PCS else", "yes");
                                             databaseReference1.child("PlanCompletionStatus").child(mBinding.userIdSignup.getText().toString()).setValue("NA");
-                                            Toasty.success(getContext(), "Account Created Successfully in Plan-C").show();
+                                            Toasty.success(getContext(), "Account Created Successfully").show();
                                             NavigationUtilMain.INSTANCE.setUpHomeScreen();
                                             Log.v("PCS else done PlanC", "yes");
                                         }
