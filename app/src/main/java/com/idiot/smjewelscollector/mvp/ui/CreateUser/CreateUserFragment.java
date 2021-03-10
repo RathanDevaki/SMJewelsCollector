@@ -483,50 +483,7 @@ public class CreateUserFragment extends Fragment implements DashboardContract.Vi
             Toasty.error(getContext(), "You haven't choose profile photo").show();
             mBinding.progressBar.setVisibility(View.GONE);
             mBinding.signUpBtn.setVisibility(View.VISIBLE);
-           /* firebaseDatabase = FirebaseDatabase.getInstance();
-            databaseReference = firebaseDatabase.getReference();
-
-            usersMap.put("Name", mBinding.userNameSignUp.getText().toString());
-            usersMap.put("Phone", mBinding.userPhoneSignUp.getText().toString());
-            usersMap.put("EmailID", mBinding.userEmailSignUp.getText().toString());
-            usersMap.put("Address", mBinding.userAddressSignUp.getText().toString());
-            usersMap.put("PinCode", mBinding.userPincodeSignUp.getText().toString());
-            usersMap.put("DOB", mBinding.userDOBSignUp.getText().toString());
-            usersMap.put("PAN", mBinding.userPANSignUp.getText().toString());
-            usersMap.put("Aadhar", mBinding.userAadharSignUp.getText().toString());
-            usersMap.put("Nominee", mBinding.userNomineeSignUp.getText().toString());
-            usersMap.put("NomineeRelationship", mBinding.userNomineeRelationshipSignUp.getText().toString());
-            usersMap.put("NomineePhone", mBinding.userNomineePhoneSignUp.getText().toString());
-            usersMap.put("Plan", mBinding.planSpinner.getSelectedItem().toString());
-
-            final String pushKey = databaseReference.push().getKey();
-
-            final HashMap<String, String> userMap2 = new HashMap<>();
-            userMap2.put("Phone", mBinding.userPhoneSignUp.getText().toString());
-            userMap2.put("UserID", pushKey);
-            userMap2.put("PlanName", "PlanA");
-            userMap2.put("SetName", "Set1");
-
-            final HashMap<String, Object> userMap3 = new HashMap<>();
-            userMap3.put("TotalMonths", 18);
-            userMap3.put("CompletedMonths", 0);
-            userMap3.put("TotalAmount", 0);
-            userMap3.put("ID", Long.parseLong(mBinding.userIdSignup.getText().toString()));
-
-            databaseReference.child("PlanA").child("UsersList").child("Set1").child(pushKey).setValue(usersMap).addOnSuccessListener(new OnSuccessListener<Void>()
-            {
-                @Override
-                public void onSuccess(Void aVoid) {
-
-                    databaseReference.child("UsersList").child(mBinding.userIdSignup.getText().toString()).setValue(userMap2);
-
-                    databaseReference.child("PlanA").child("UsersList").child("Set1").child(pushKey).updateChildren(userMap3);
-
-                    Toasty.success(getContext(), "Account Created Successfully").show();
-
-                    NavigationUtilMain.INSTANCE.setUpHomeScreen();
-                }
-            }); */
+  
         }
     }
 

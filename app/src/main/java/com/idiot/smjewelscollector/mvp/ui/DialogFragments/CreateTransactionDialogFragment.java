@@ -56,7 +56,9 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
     String userID;
     String ID;
     String setName;
-
+    long dailyEarnings=0;
+    long monthlyEarnings=0;
+    long weeklyEarnings=0;
     long instAmt = 0;
     long instPeriod = 0;
     DatabaseReference databaseReference;
@@ -167,8 +169,6 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference().child(planName);
         final DatabaseReference databaseReference2 = firebaseDatabase.getReference();
-        Log.v("user IDDD", userID);
-        Log.v("IDDD", ID);
         if (planName.compareToIgnoreCase("PlanA") == 0) {
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -284,10 +284,40 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
         }
 
     }
+    private void earningsUpdate() {
+        final DatabaseReference databaseReferenceAmount = firebaseDatabase.getReference();
+        databaseReferenceAmount.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("DailyEarnings")) {
+                    Log.v("IN collection", "Has daily Earnings");
+                    dailyEarnings = snapshot.child("DailyEarnings").getValue(Long.class);
+                    weeklyEarnings = snapshot.child("WeeklyEarnings").getValue(Long.class);
+                    monthlyEarnings = snapshot.child("MonthlyEarnings").getValue(Long.class);
+
+                    String paidAmountAll = mBinding.userAmountCreateTransaction.getText().toString();
+                    long _paid_amount = Long.parseLong(paidAmountAll);
+                    dailyEarnings = dailyEarnings + _paid_amount;
+                    weeklyEarnings = weeklyEarnings + _paid_amount;
+                    monthlyEarnings = monthlyEarnings + _paid_amount;
+                    databaseReferenceAmount.child("DailyEarnings").setValue(dailyEarnings);
+                    databaseReferenceAmount.child("MonthlyEarnings").setValue(monthlyEarnings);
+                    databaseReferenceAmount.child("WeeklyEarnings").setValue(weeklyEarnings);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void createTransaction() {
 
         final DatabaseReference databaseReferenceAdmin = firebaseDatabase.getReference().child("TransactionDetails");
+
         final String pushKey;
         amount = mBinding.userAmountCreateTransaction.getText().toString();
         String comment = mBinding.userCommentsCreateTransaction.getText().toString();
@@ -308,6 +338,8 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
         updateAdminTransaction.put("PlanName", planName);
 
         //PlanA
+
+
         if (planName.compareToIgnoreCase("PlanA") == 0) {
 
             DatabaseReference databaseReference1 = firebaseDatabase.getReference().child(planName).child("UsersList").child(setName).child(userID);
@@ -321,7 +353,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         public void onSuccess(Void aVoid) {
                             sendSMSToUser(phone, amount, date);
                             updateTransactionInfoA();
-
+                            earningsUpdate();
                             updateCollectorData();
                         }
                     });
@@ -341,6 +373,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         @Override
                         public void onSuccess(Void aVoid) {
                             updatePlanBdata();
+                            earningsUpdate();
                             updateCollectorData();
 
                         }
@@ -361,6 +394,7 @@ public class CreateTransactionDialogFragment extends DialogFragment implements D
                         @Override
                         public void onSuccess(Void aVoid) {
                             updatePlanCdata();
+                            earningsUpdate();
                             updateCollectorData();
 
                         }
